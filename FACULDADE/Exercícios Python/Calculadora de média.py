@@ -1,11 +1,9 @@
-numdisplay = 1
 contador = 0
 acumulador = 0
 while True:
-    num = int(input(f"Digite o {numdisplay} número ou aperte 0 para finalizar:"))
+    num = int(input(f"Digite o {contador + 1} número ou aperte 0 para finalizar:"))
     if num != 0:
         acumulador += num
-        numdisplay += 1
         contador += 1
     if num == 0:
         break
