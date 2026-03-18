@@ -103,6 +103,7 @@ if escolha == 6.6:
     fila = list(range(1, último + 1))
     fila2 = list(range(1, último2 + 1))
     contador = 0
+    válido = False
     while True:
         print(f"""
         Existem {len(fila)} clientes na fila 1.
@@ -117,6 +118,7 @@ if escolha == 6.6:
         """)
         operação = input("Operação (F, G, A, B ou S): ")
         if "F" in operação:
+            válido = True
             contador = operação.count("F")
             while contador > 0:
                 último += 1#Incrementa o ticket do novo cliente
@@ -125,6 +127,7 @@ if escolha == 6.6:
                 contador -= 1
             contador = 0
         if "G" in operação:
+            válido = True
             contador = operação.count("G")
             while contador > 0:
                 último2 += 1#Incrementa o ticket do novo cliente
@@ -133,8 +136,9 @@ if escolha == 6.6:
                 contador -= 1
             contador = 0
         if "A" in operação:
+            válido = True
             if len(fila) > 0:
-                contador = operação.count("A")
+                contador = operação.count("B")
                 while contador > 0:
                     atendido = fila.pop(0)
                     print(f"Cliente {atendido} da fila 1 atendido.")
@@ -143,17 +147,19 @@ if escolha == 6.6:
             else:
                 print("Fila 1 está vazia! Ninguém para atender.")
         if "B" in operação:
+            válido = True
             if len(fila2) > 0:
                 contador = operação.count("A")
                 while contador > 0:
-                    atendido = fila2.pop(0)
-                    print(f"Cliente {atendido} da fila 2 atendido.")
+                    atendido2 = fila2.pop(0)
+                    print(f"Cliente {atendido2} da fila 2 atendido.")
                     contador -= 1
                 contador = 0
             else:
                 print("Fila 2 está vazia! Ninguém para atender.")
         if "S" in operação:
+            válido = True
             print("Saindo...")
             break
-        if ("A" or "F" or "S"or "G" or "B") not in operação:
+        if válido == False:
             print("\nOperação inválida Digite apenas F, G, A, B ou S!")
