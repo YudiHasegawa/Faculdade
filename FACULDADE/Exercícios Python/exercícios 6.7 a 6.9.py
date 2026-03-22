@@ -1,4 +1,4 @@
-escolha = float(input("Digite o exercício desejado entre 6.7 6.8 6.9 6.10 6.11 : "))
+escolha = float(input("Digite o exercício desejado entre 6.7 6.8 6.9  : "))
 if escolha == 6.7:
     print("Exercício 6.7")
     while True:
