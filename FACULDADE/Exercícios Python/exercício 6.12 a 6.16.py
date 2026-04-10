@@ -1,4 +1,4 @@
-escolha = float(input("Digite o exercício desejado entre 6.12 6.13 6.16 : "))
+escolha = float(input("Digite o exercício desejado entre 6.12 6.13 6.16 6.17 : "))
 if escolha == 6.12:
     print("Exercício 6.12")
     #Faça um programa que mostre o menor elemento de uma lista
@@ -55,3 +55,11 @@ if escolha == 6.16:
         fim -= 1
     for e in L:
         print(e)
+if escolha == 6.17:
+    print("Exercício 6.17")
+estoque = {"tomate": [1000, 2.30],
+           "alface": [ 500, 0.45],
+           "batata": [2001, 1.20],
+           "feijão": [ 100, 1.50]
+           }
+venda = []
