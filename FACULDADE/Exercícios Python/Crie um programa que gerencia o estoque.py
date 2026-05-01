@@ -1,7 +1,8 @@
 #Crie um programa que gerencia o estoque de uma loja
 '''
 Requisitos: Use um Dicionário de Dicionários. 
-A chave principal é o nome da peça (ex: "CAMISETA BOXY HEAVYWEIGHT"). 
+A chave principal é o tipo de roupa
+As chaves dentro da principal são as opções desse tipo de roupa (ex: "CAMISETA BOXY HEAVYWEIGHT"). 
 O valor é outro dicionário contendo preço, quantidade e gramatura.
 
 O programa deve permitir atualizar o estoque. Se a quantidade chegar a 0, 
