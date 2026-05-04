@@ -9,29 +9,46 @@ O programa deve permitir atualizar o estoque. Se a quantidade chegar a 0,
 deve disparar uma Exception customizada (ou um erro tratado) avisando que o item 
 está esgotado.
 '''
-
-camisetas = {"CAMISETA BOXY HEAVYWEIGHT": {"Preço": 149.90, 
-                                           "Quantidade": 45,
-                                           "Gramatura": 260},
-             "CAMISETA OVERSIZED VINTAGE WASH": {"Preço": 129.00,
-                                                 "Quantidade": 30,
-                                                 "Gramatura": 220}}
-calças = {"CALÇA WIDE LEG CANVAS": {"Preço": 259.00,
-                                    "Quantidade": 15,
-                                    "Gramatura": 380},
-          "CALÇA CARGO PARACHUTE PANTS": {"Preço": 239.90,
-                                          "Quantidade": 8,
-                                          "Gramatura": 180}}
-blusas = {"BLUSA HODDIE DROP SHOULDER": {"Preço": 289.00,
-                                         "Quantidade": 12,
-                                         "Gramatura": 450},
-          "BLUSA CREWNECK MINIMALIST": {"Preço": 219.00,
-                                        "Quantidade": 20,
-                                        "Gramatura": 400}}
-def venda (escolha, quantidade, menu):
-  if quantidade <= menu[escolha][("Quantidade")]:
-    preçototal = quantidade * menu[escolha][("Preço")]
-    menu[escolha].update({("Quantidade"): menu[escolha][("Quantidade")] - quantidade})
+import json
+arquivo = "estoque.json"
+def carregar_estoque():
+  try:
+    with open ("estoque.json", "r") as f:
+      return json.load(f)
+  except (FileNotFoundError, json.JSONDecodeError):
+    return {
+      "camisetas": {"CAMISETA BOXY HEAVYWEIGHT": {"Preço": 149.90, 
+                                                "Quantidade": 45,
+                                                "Gramatura": 260},
+                  "CAMISETA OVERSIZED VINTAGE WASH": {"Preço": 129.00,
+                                                      "Quantidade": 30,
+                                                      "Gramatura": 220}},
+      "calças": {"CALÇA WIDE LEG CANVAS": {"Preço": 259.00,
+                                          "Quantidade": 15,
+                                          "Gramatura": 380},
+                "CALÇA CARGO PARACHUTE PANTS": {"Preço": 239.90,
+                                                "Quantidade": 8,
+                                                "Gramatura": 180}},
+      "blusas": {"BLUSA HODDIE DROP SHOULDER": {"Preço": 289.00,
+                                              "Quantidade": 12,
+                                              "Gramatura": 450},
+                "BLUSA CREWNECK MINIMALIST": {"Preço": 219.00,
+                                              "Quantidade": 20,
+                                              "Gramatura": 400}}
+            }
+estoque_geral = carregar_estoque()
+camisetas = estoque_geral["camisetas"]
+calças = estoque_geral["calças"]
+blusas = estoque_geral["blusas"]
+def salvar_estoque(dados):
+  with open(arquivo, "w") as f:
+    json.dump(dados, f, indent=4)
+def venda (escolha, quantidade, opção):
+  if quantidade <= opção[escolha][("Quantidade")]:
+    preçototal  = quantidade * opção[escolha][("Preço")]
+    opção[escolha][("Quantidade")] -= quantidade
+    with open ("estoque.json", "w") as f:
+      json.dump(estoque_geral, f, indent=4)
     return f"\nO preço total será de: {preçototal:.2f}.\n"
   else:
     return "\nDigite uma quantidade válida.\n"
