@@ -1,18 +1,3 @@
--- Selecione todos os clientes com email cadastrado
-SELECT idCliente, flEmail
-FROM clientes
-WHERE flEmail = 1;
-
--- Selecione todas as transações de 50 pontos (exatos)
-SELECT IdCliente, IdTransacao, QtdePontos
-FROM transacoes
-WHERE qtdePontos = 50;
-
--- Selecione todos clientes com mais de 500 pontos
-SELECT idCliente, qtdePontos
-FROM clientes
-WHERE qtdePontos > 500;
-
 -- Selecione produtos que contêm 'churn' no nome
 
 -- Jeito noob loser porco podre iniciante
