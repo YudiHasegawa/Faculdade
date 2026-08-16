@@ -1,17 +1,22 @@
+DROP TABLE IF EXISTS projeto_final;
+
+CREATE TABLE IF NOT EXISTS projeto_final AS
+
 WITH tb_transacoes AS (
     SELECT  IdTransacao,
             IdCliente,
             QtdePontos,
             datetime(substr(DtCriacao, 1,19)) AS DtCriacao,
-            julianday('now') - julianday(substr(DtCriacao, 1 ,10)) AS diffDate
-
+            julianday('2025-08-30') - julianday(substr(DtCriacao, 1 ,10)) AS diffDate,
+            CAST(strftime('%H', substr(DtCriacao, 1,19)) AS INTEGER) AS DtHora
     FROM transacoes
+    WHERE DtCriacao < '2025-08-30'
 ),
 
 tb_cliente AS (
     SELECT  IdCliente,
             datetime(substr(DtCriacao, 1,19)) AS DtCriacao,
-            CAST(julianday('now') - julianday(substr(DtCriacao, 1 ,10)) AS INTEGER) AS IdadeBase
+            CAST(julianday('2025-08-30') - julianday(substr(DtCriacao, 1 ,10)) AS INTEGER) AS IdadeBase
     FROM clientes
 ),
 
@@ -45,7 +50,7 @@ tb_transacao_produto AS (
     SELECT  t1.IdCliente,
             t1.IdTransacao,
             t3.DescNomeProduto,
-            julianday('now') - julianday(substr(DtCriacao, 1 ,10)) AS diffDate
+            julianday('2025-08-30') - julianday(substr(DtCriacao, 1 ,10)) AS diffDate
 
     FROM tb_transacoes AS t1
 
@@ -80,6 +85,23 @@ SELECT  *,
 FROM tb_cliente_produto
 ),
 
+tb_interacoes_dia AS (
+    SELECT  IdCliente,
+            count(IdTransacao) AS QtdeInteracoes,
+            strftime('%w', substr(DtCriacao, 1,10)) AS DtDia
+    FROM tb_transacoes
+
+    WHERE diffDate <= 28
+
+    GROUP BY 1, 3
+),
+
+tb_rn_dia AS (
+    SELECT  *,
+            row_number() OVER (PARTITION BY IdCliente ORDER BY QtdeInteracoes DESC) AS RnDia
+    FROM tb_interacoes_dia
+),
+
 tb_join AS (
     SELECT  t1.*,
             t2.IdadeBase,
@@ -87,7 +109,9 @@ tb_join AS (
             t4.DescNomeProduto AS Produto56,
             t5.DescNomeProduto AS Produto28,
             t6.DescNomeProduto AS Produto14,
-            t7.DescNomeProduto AS Produto7
+            t7.DescNomeProduto AS Produto7,
+            COALESCE(t8.DtDia, -1) AS DtDia,
+            COALESCE(t9.Periodo, 'Sem Informação') AS PeriodoMaisTransacao28
     FROM tb_sumario_transacoes AS t1
 
     LEFT JOIN tb_cliente AS t2
@@ -112,7 +136,40 @@ tb_join AS (
     LEFT JOIN tb_cliente_produto_rn AS t7
     ON t1.IdCliente = t7.IdCliente
     AND t7.rn7 = 1
+
+    LEFT JOIN tb_rn_dia AS t8
+    ON t1.IdCliente = t8.IdCliente
+    AND t8.RnDia = 1
+
+    LEFT JOIN tb_rn_periodo AS t9
+    ON t1.IdCliente = t9.IdCliente
+    AND t9.rnperiodo = 1
+),
+
+tb_cliente_periodo AS (
+    SELECT  IdCliente,
+            CASE 
+                WHEN DtHora BETWEEN 7 AND 12 THEN 'Manhã'
+                WHEN DtHora BETWEEN 13 AND 18 THEN 'Tarde'
+                WHEN DtHora BETWEEN 19 AND 23 THEN 'Noite'
+                ELSE 'Madrugada'
+            END AS Periodo,
+            COUNT(IdTransacao) AS QtdeTransacoes
+    FROM tb_transacoes
+
+    WHERE diffDate <= 28
+
+    GROUP BY 1, 2
+),
+
+tb_rn_periodo AS (
+    SELECT  *,
+            row_number() OVER (PARTITION BY IdCliente ORDER BY QtdeTransacoes DESC) AS rnperiodo
+    FROM tb_cliente_periodo
 )
 
-SELECT * FROM tb_join
-ORDER BY IdCliente
+SELECT  '2025-08-30' AS DtRef,
+        *,
+        100. * QtdeTransacoes28 / QtdeTransacoesVida AS Engajamento28Vida
+FROM tb_join
+;
