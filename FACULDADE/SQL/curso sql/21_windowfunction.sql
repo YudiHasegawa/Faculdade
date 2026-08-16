@@ -1,4 +1,3 @@
-
 WITH cliente_dia AS (
     SELECT   
             DISTINCT
