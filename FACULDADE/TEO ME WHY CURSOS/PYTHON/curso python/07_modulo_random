@@ -1,0 +1,13 @@
+# %%
+
+import random
+
+# %%
+
+random.randint(1, 10)
+# %%
+
+lista = ["Téo", "Maria", "José", "Ana", "João"]
+
+random.choice(lista)
+# %%
