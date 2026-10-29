@@ -1,0 +1,8 @@
+int main(void) {
+    int a = 50;
+    int b = 30;
+    int resultado = a + b;
+    printf("Resultado = %d\n", resultado);
+
+    return 0;
+}
